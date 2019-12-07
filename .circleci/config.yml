@@ -75,3 +75,6 @@ workflows:
       - test:
           requires:
             - build
+      - analysis:
+          requires:
+            - test
