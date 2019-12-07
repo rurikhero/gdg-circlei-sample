@@ -51,7 +51,19 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn test
+      - run: mkdir .tmp && yarn test > .tmp/coverage.xml
+      - persist_to_workspace:
+          root: .tmp
+          paths:
+            - coverage.xml
+  analysis:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: .tmp
+      - run: cat .tmp/coverage.xml
 workflows:
   version: 2
   gdg_workflow:
